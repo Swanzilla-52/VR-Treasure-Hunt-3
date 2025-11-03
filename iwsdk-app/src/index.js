@@ -1,9 +1,14 @@
 import {
   Mesh,
   MeshStandardMaterial,
-  SphereGeometry,
+  PlaneGeometry,  
+  EnvironmentType,
+  LocomotionEnvironment,
   SessionMode,
   World,
+  AssetType,
+  AssetManager,
+  
 } from '@iwsdk/core';
 
 import {
@@ -13,8 +18,15 @@ import {
 } from '@iwsdk/core';
 
 import { PanelSystem } from './panel.js'; // system for displaying "Enter VR" panel on Quest 1
+import { EnvironmentNode } from 'three/webgpu';
 
-const assets = { };
+const assets = {  
+  Tree: {
+    url: "/gltf/Tree/pine_tree.gltf",
+    type: AssetType.GLTF,
+    priority: "critical",
+  },
+};
 
 World.create(document.getElementById('scene-container'), {
   assets,
@@ -24,20 +36,28 @@ World.create(document.getElementById('scene-container'), {
     features: { }
   },
 
-  features: { },
+  features: {
+    locomotion: {
+      smooth: true,
+      teleport: true,
+      speed: 1.5,
+      teleportDistance: 2.5,
+    },
+   },
 
 }).then((world) => {
 
   const { camera } = world;
 
-  
-  // Create a green sphere
-  const sphereGeometry = new SphereGeometry(0.5, 32, 32);
-  const greenMaterial = new MeshStandardMaterial({ color: 0x33ff33 });
-  const sphere = new Mesh(sphereGeometry, greenMaterial);
-  sphere.position.set(1, 0, -2);
-  const sphereEntity = world.createTransformEntity(sphere);
+  const GroundGeometry = new PlaneGeometry(40, 40);
+  const GroundMaterial = new MeshStandardMaterial({ color: 0x377F03 });
+  const Ground = new Mesh(GroundGeometry, GroundMaterial);
+  Ground.rotation.x = -Math.PI / 2;
+  const GroundEntity = world.createTransformEntity(Ground);
+  GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
 
+  const treeModel = AssetManager.getGLTF("Tree").scene;
+  const treeEntity = world.createTransformEntity(treeModel);
 
 
 
