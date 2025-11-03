@@ -22,7 +22,7 @@ import { EnvironmentNode } from 'three/webgpu';
 
 const assets = {  
   Tree: {
-    url: "/gltf/Tree/pine_tree.gltf",
+    url: "/gltf/Tree/pine_tree.glb",
     type: AssetType.GLTF,
     priority: "critical",
   },
@@ -44,7 +44,6 @@ World.create(document.getElementById('scene-container'), {
       teleportDistance: 2.5,
     },
    },
-
 }).then((world) => {
 
   const { camera } = world;
@@ -56,8 +55,11 @@ World.create(document.getElementById('scene-container'), {
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
 
-  const treeModel = AssetManager.getGLTF("Tree").scene;
-  const treeEntity = world.createTransformEntity(treeModel);
+  const tree = AssetManager.getGLTF('pineTree');
+  world.scene.add(tree.scene);
+  tree.scene.position.set(0, 0, -3);
+  tree.scene.scale.set(10, 10, 10);
+  
 
 
 
