@@ -1,7 +1,7 @@
 import {
   Mesh,
   MeshStandardMaterial,
-  PlaneGeometry,  
+  PlaneGeometry,
   EnvironmentType,
   LocomotionEnvironment,
   SessionMode,
@@ -18,11 +18,10 @@ import {
 } from '@iwsdk/core';
 
 import { PanelSystem } from './panel.js'; // system for displaying "Enter VR" panel on Quest 1
-import { EnvironmentNode } from 'three/webgpu';
 
 const assets = {  
-  Tree: {
-    url: "/gltf/Tree/pine_tree.glb",
+  myTree: {
+    url: "/gltf/Tree/handpainted_pine_tree.glb",
     type: AssetType.GLTF,
     priority: "critical",
   },
@@ -54,11 +53,19 @@ World.create(document.getElementById('scene-container'), {
   Ground.rotation.x = -Math.PI / 2;
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
+  
+  let numsFound = 0;
 
-  const tree = AssetManager.getGLTF('pineTree');
-  world.scene.add(tree.scene);
-  tree.scene.position.set(0, 0, -3);
-  tree.scene.scale.set(10, 10, 10);
+  GroundEntity.addComponent(Interactable);       
+  GroundEntity.object3D.addEventListener("pointerdown", removefloor);
+  function removefloor() {
+    GroundEntity.destroy();
+    numsFound += 1;
+  };
+
+  const treeModel = AssetManager.getGLTF('myTree');
+  const treeEntity = world.createTransformEntity(treeModel);
+  treeEntity.object3D.position.set(1, 1, -5);
   
 
 
