@@ -11,6 +11,7 @@ import {
   DirectionalLight,
   Scene,
   AmbientLight,
+  SphereGeometry,
   
 } from '@iwsdk/core';
 
@@ -50,28 +51,56 @@ World.create(document.getElementById('scene-container'), {
 }).then((world) => {
 
   const { camera } = world;
+  
+
 
   const GroundGeometry = new PlaneGeometry(40, 40);
   const GroundMaterial = new MeshStandardMaterial({ color: 0x377F03 });
   const Ground = new Mesh(GroundGeometry, GroundMaterial);
   Ground.rotation.x = -Math.PI / 2;
+  Ground.receiveShadow = true;
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
   
   const treeModel = AssetManager.getGLTF('furtree').scene;
+  treeModel.castShadow = true;
+  treeModel.receiveShadow = true;
   const treeEntity = world.createTransformEntity(treeModel);
-  treeEntity.object3D.position.set(-1 , 0, -1);
+  treeEntity.object3D.position.set(-1, 0, -1);
 
+
+  const sphereGeometry = new SphereGeometry(0.25, 32, 32);
+  const sphereMaterial = new MeshStandardMaterial({ color: 0xff0000 }); // red
   
-  
+  const sphere = new Mesh(sphereGeometry, sphereMaterial);
+  sphere.position.set(0, 0.5, -2);
+  const sphereEntity = world.createTransformEntity(sphere);
+
+  const sphere1 = new Mesh(sphereGeometry, sphereMaterial);
+  sphere1.position.set(1, 0.5, -2);
+  const sphere1Entity = world.createTransformEntity(sphere1);
+
+  const sphere2 = new Mesh(sphereGeometry, sphereMaterial);
+  sphere2.position.set(2, 0.5, -2);
+  const sphere2Entity = world.createTransformEntity(sphere2);
+
   let numsFound = 0;
 
-  GroundEntity.addComponent(Interactable);       
-  GroundEntity.object3D.addEventListener("pointerdown", removefloor);
-  function removefloor() {
-    GroundEntity.destroy();
+  sphereEntity.addComponent(Interactable);
+  sphereEntity.object3D.addEventListener("pointerdown", removeObject);
+  function removeObject() {
+    sphereEntity.destroy();
     numsFound += 1;
   };
+  
+  const sun = new DirectionalLight(0xffffff, 1.5);
+  sun.position.set(5, 10, 7);
+  sun.castShadow = true;
+  scene.add(sun);
+
+  const ambient = new AmbientLight(0x404040, 1.2);
+  scene.add(ambient);
+  
 
 
 
