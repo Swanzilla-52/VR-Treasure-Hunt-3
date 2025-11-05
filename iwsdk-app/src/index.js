@@ -62,7 +62,9 @@ World.create(document.getElementById('scene-container'), {
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
 
   const treeModel = AssetManager.getGLTF('oakTree').scene;
-  const spacing = 6;
+  treeModel.receiveShadow = true;
+  treeModel.castShadow = true;
+  const spacing = 5.5;
   const gridSize = 40;
   const halfSize = gridSize / 2;
 
@@ -86,15 +88,19 @@ World.create(document.getElementById('scene-container'), {
   
   const sphere = new Mesh(sphereGeometry, sphereMaterial);
   sphere.position.set(15, 0.5, 10);
+  sphere.castShadow = true;
+  sphere.receiveShadow = true;
   const sphereEntity = world.createTransformEntity(sphere);
   sphereEntity.addComponent(Interactable);
   sphereEntity.object3D.addEventListener("pointerdown", removeObject);
   function removeObject() {
-    sphereEntity.destroy();
+    sphereEntity.destroy
   };
 
   const sphere1 = new Mesh(sphereGeometry, sphereMaterial);
   sphere1.position.set(-5, 0.5, -10);
+  sphere1.castShadow = true;
+  sphere1.receiveShadow = true;
   const sphere1Entity = world.createTransformEntity(sphere1);
   sphere1Entity.addComponent(Interactable);
   sphere1Entity.object3D.addEventListener("pointerdown", removeObject1);
@@ -104,13 +110,14 @@ World.create(document.getElementById('scene-container'), {
 
   const sphere2 = new Mesh(sphereGeometry, sphereMaterial);
   sphere2.position.set(10, 0.5, -5);
+  sphere2.castShadow = true;
+  sphere2.receiveShadow = true;
   const sphere2Entity = world.createTransformEntity(sphere2);
   sphere2Entity.addComponent(Interactable);
   sphere2Entity.object3D.addEventListener("pointerdown", removeObject2);
   function removeObject2() {
     sphere2Entity.destroy();
   };
-
 
   const sun = new DirectionalLight(0xffffff, 1.5);
   sun.position.set(5, 10, 7);
