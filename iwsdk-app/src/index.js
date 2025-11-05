@@ -8,6 +8,9 @@ import {
   World,
   AssetType,
   AssetManager,
+  DirectionalLight,
+  Scene,
+  AmbientLight,
   
 } from '@iwsdk/core';
 
@@ -19,13 +22,14 @@ import {
 
 import { PanelSystem } from './panel.js'; // system for displaying "Enter VR" panel on Quest 1
 
-const assets = {  
-  myTree: {
-    url: "/gltf/Tree/handpainted_pine_tree.glb",
+const assets = {
+  furtree: {                                // <----------------------- added plant model
+    url: '/gltf/Tree/oak_tree.glb',
     type: AssetType.GLTF,
-    priority: "critical",
+    priority: 'critical',
   },
-};
+
+ };//
 
 World.create(document.getElementById('scene-container'), {
   assets,
@@ -54,6 +58,12 @@ World.create(document.getElementById('scene-container'), {
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
   
+  const treeModel = AssetManager.getGLTF('furtree').scene;
+  const treeEntity = world.createTransformEntity(treeModel);
+  treeEntity.object3D.position.set(-1 , 0, -1);
+
+  
+  
   let numsFound = 0;
 
   GroundEntity.addComponent(Interactable);       
@@ -62,12 +72,6 @@ World.create(document.getElementById('scene-container'), {
     GroundEntity.destroy();
     numsFound += 1;
   };
-
-  const treeModel = AssetManager.getGLTF('myTree');
-  const treeEntity = world.createTransformEntity(treeModel);
-  treeEntity.object3D.position.set(1, 1, -5);
-  
-
 
 
 
