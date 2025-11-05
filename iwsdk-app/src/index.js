@@ -12,6 +12,7 @@ import {
   Scene,
   AmbientLight,
   SphereGeometry,
+  Group,
   
 } from '@iwsdk/core';
 
@@ -52,8 +53,6 @@ World.create(document.getElementById('scene-container'), {
 
   const { camera } = world;
   
-
-
   const GroundGeometry = new PlaneGeometry(40, 40);
   const GroundMaterial = new MeshStandardMaterial({ color: 0x377F03 });
   const Ground = new Mesh(GroundGeometry, GroundMaterial);
@@ -61,38 +60,59 @@ World.create(document.getElementById('scene-container'), {
   Ground.receiveShadow = true;
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
-  
+
   const treeModel = AssetManager.getGLTF('furtree').scene;
-  treeModel.castShadow = true;
-  treeModel.receiveShadow = true;
-  const treeEntity = world.createTransformEntity(treeModel);
-  treeEntity.object3D.position.set(-1, 0, -1);
+  const spacing = 6;
+  const gridSize = 40;
+  const halfSize = gridSize / 2;
+
+  for (let x = -halfSize; x <= halfSize; x += spacing) {
+    for (let z = -halfSize; z <= halfSize; z += spacing) {
+      const tree = treeModel.clone(true);
+      
+      const offsetX = (Math.random() - 0.5) * spacing * 0.6; 
+      const offsetZ = (Math.random() - 0.5) * spacing * 0.6;
+
+      tree.position.set(x + offsetX, -.2, z + offsetZ);
+
+      tree.rotation.y = Math.random() * Math.PI * 2;
+
+      world.createTransformEntity(tree);
+    }
+  }
 
 
   const sphereGeometry = new SphereGeometry(0.25, 32, 32);
   const sphereMaterial = new MeshStandardMaterial({ color: 0xff0000 }); // red
   
   const sphere = new Mesh(sphereGeometry, sphereMaterial);
-  sphere.position.set(0, 0.5, -2);
+  sphere.position.set(15, 0.5, 10);
   const sphereEntity = world.createTransformEntity(sphere);
-
-  const sphere1 = new Mesh(sphereGeometry, sphereMaterial);
-  sphere1.position.set(1, 0.5, -2);
-  const sphere1Entity = world.createTransformEntity(sphere1);
-
-  const sphere2 = new Mesh(sphereGeometry, sphereMaterial);
-  sphere2.position.set(2, 0.5, -2);
-  const sphere2Entity = world.createTransformEntity(sphere2);
-
-  let numsFound = 0;
-
   sphereEntity.addComponent(Interactable);
   sphereEntity.object3D.addEventListener("pointerdown", removeObject);
   function removeObject() {
     sphereEntity.destroy();
-    numsFound += 1;
   };
-  
+
+  const sphere1 = new Mesh(sphereGeometry, sphereMaterial);
+  sphere1.position.set(-5, 0.5, -10);
+  const sphere1Entity = world.createTransformEntity(sphere1);
+  sphere1Entity.addComponent(Interactable);
+  sphere1Entity.object3D.addEventListener("pointerdown", removeObject1);
+  function removeObject1() {
+    sphere1Entity.destroy();
+  };
+
+  const sphere2 = new Mesh(sphereGeometry, sphereMaterial);
+  sphere2.position.set(10, 0.5, -5);
+  const sphere2Entity = world.createTransformEntity(sphere2);
+  sphere2Entity.addComponent(Interactable);
+  sphere2Entity.object3D.addEventListener("pointerdown", removeObject2);
+  function removeObject2() {
+    sphere2Entity.destroy();
+  };
+
+
   const sun = new DirectionalLight(0xffffff, 1.5);
   sun.position.set(5, 10, 7);
   sun.castShadow = true;
