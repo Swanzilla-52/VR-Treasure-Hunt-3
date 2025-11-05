@@ -25,7 +25,7 @@ import {
 import { PanelSystem } from './panel.js'; // system for displaying "Enter VR" panel on Quest 1
 
 const assets = {
-  furtree: {                                // <----------------------- added plant model
+  oakTree: {                                // <----------------------- added plant model
     url: '/gltf/Tree/oak_tree.glb',
     type: AssetType.GLTF,
     priority: 'critical',
@@ -61,7 +61,7 @@ World.create(document.getElementById('scene-container'), {
   const GroundEntity = world.createTransformEntity(Ground);
   GroundEntity.addComponent(LocomotionEnvironment, { type: EnvironmentType.STATIC });
 
-  const treeModel = AssetManager.getGLTF('furtree').scene;
+  const treeModel = AssetManager.getGLTF('oakTree').scene;
   const spacing = 6;
   const gridSize = 40;
   const halfSize = gridSize / 2;
@@ -78,12 +78,11 @@ World.create(document.getElementById('scene-container'), {
       tree.rotation.y = Math.random() * Math.PI * 2;
 
       world.createTransformEntity(tree);
-    }
-  }
-
+    };
+  };
 
   const sphereGeometry = new SphereGeometry(0.25, 32, 32);
-  const sphereMaterial = new MeshStandardMaterial({ color: 0xff0000 }); // red
+  const sphereMaterial = new MeshStandardMaterial({ color: 0xd4af37 });
   
   const sphere = new Mesh(sphereGeometry, sphereMaterial);
   sphere.position.set(15, 0.5, 10);
